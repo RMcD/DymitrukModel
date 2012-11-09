@@ -1,0 +1,67 @@
+// *************************************************************************
+// Copyright (C) 2012, Michael & Susan Dell Foundation. All Rights Reserved.
+// *************************************************************************
+
+using System;
+using System.Collections;
+
+namespace EdFi.Dashboards.Infrastructure.Implementations
+{
+	public class HashtableSessionStateProvider : ISessionStateProvider
+	{
+        public HashtableSessionStateProvider()
+        {
+            var r = new Random();
+            sessionId = r.Next().ToString();
+        }
+	    private readonly string sessionId;
+		private readonly Hashtable values = new Hashtable();
+
+		public object GetValue(string name)
+		{
+			return values[name];
+		}
+
+		public void SetValue(string name, object value)
+		{
+			values[name] = value;
+		}
+
+<<<<<<<
+        public void RemoveValue(string name)
+        {
+            if (values.ContainsKey(name))
+                values.Remove(name);
+=======
+        public void RemoveValue(string name)
+        {
+            if (values.ContainsKey(name))
+                values.Remove(name);
+>>>>>>>
+        }
+
+		public object this[string name]
+		{
+			get { return values[name]; }
+			set { values[name] = value; }
+		}
+
+        public void Clear()
+        {
+            values.Clear();
+        }
+
+        public int Count
+        {
+            get { return values.Count; }
+        }
+
+	    public string SessionId
+	    {
+	        get
+	        {
+                return sessionId;
+	        }
+	    }
+	}
+}

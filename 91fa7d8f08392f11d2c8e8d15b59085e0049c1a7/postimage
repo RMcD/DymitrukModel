@@ -1,0 +1,140 @@
+﻿// *************************************************************************
+// Copyright (C) 2012, Michael & Susan Dell Foundation. All Rights Reserved.
+// *************************************************************************
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
+using System.Web.Routing;
+using EdFi.Dashboards.Presentation.Core.Providers.Session;
+using EdFi.Dashboards.Presentation.Web.Areas.Staff.Models;
+using EdFi.Dashboards.Presentation.Web.Utilities;
+using EdFi.Dashboards.Resources;
+using EdFi.Dashboards.Resources.Models.Common;
+using EdFi.Dashboards.Resources.Models.CustomGrid;
+using EdFi.Dashboards.Resources.Models.Staff;
+using EdFi.Dashboards.Resources.Models.Student;
+using EdFi.Dashboards.Resources.Staff;
+using EdFi.Dashboards.SecurityTokenService.Authentication;
+
+namespace EdFi.Dashboards.Presentation.Core.Areas.Staff.Controllers
+{
+    public class GeneralOverviewController : Controller
+    {
+        private readonly IService<GeneralOverviewRequest, GeneralOverviewModel> service;
+        private readonly IService<GeneralOverviewMetaRequest, GeneralOverviewMetaModel> metaService;
+        private readonly IPreviousNextSessionProvider previousNextSessionProvider;
+        private readonly IService<DefaultSectionRequest, DefaultSectionModel> defaultSectionService;
+
+        public GeneralOverviewController(
+            IService<GeneralOverviewRequest, GeneralOverviewModel> service,
+            IService<GeneralOverviewMetaRequest, GeneralOverviewMetaModel> metaService,
+            IPreviousNextSessionProvider previousNextSessionProvider,
+            IService<DefaultSectionRequest, DefaultSectionModel> defaultSectionService
+            )
+        {
+            this.service = service;
+            this.previousNextSessionProvider = previousNextSessionProvider;
+            this.metaService = metaService;
+            this.defaultSectionService = defaultSectionService;
+        }
+
+        public ActionResult Get(GeneralOverviewMetaRequest context)
+        {
+            //make sure StudentListType and SectionCohortId are populated
+            if (context.StudentListType == StudentListType.None.ToString())
+            {
+                var defaultSectionModel = defaultSectionService.Get(new DefaultSectionRequest
+                                                                      {
+                                                                          SchoolId = context.SchoolId,
+                                                                          StaffUSI = context.StaffUSI,
+                                                                          SectionOrCohortId = context.SectionOrCohortId,
+                                                                          StudentListType = context.StudentListType,
+                                                                          Staff = ControllerContext.RouteData.Values["staff"].ToString(),
+                                                                          ViewType = StaffModel.ViewType.GeneralOverview
+                                                                      });
+
+                if (defaultSectionModel.ListType != StudentListType.None.ToString())
+                    return Redirect(defaultSectionModel.Link);        
+            }
+
+            var staffUSI = context.StaffUSI;
+            var results = metaService.Get(context);
+
+            //Constructing the Grid Data.
+            var model = new StaffStudentListModel {GridTable = new GridTable()};
+
+            if (results.ListMetadata.Any())
+            {
+                //Grouping headers and underlying columns.
+                model.GridTable.Columns = results.ListMetadata.GenerateHeader();
+            }
+            //if this is the current users own page
+            model.IsCurrentUserListOwner = UserInformation.Current.StaffUSI == staffUSI;
+            model.IsCustomStudentList = context.StudentListType == StudentListType.CustomStudentList.ToString();
+            model.ListId = context.SectionOrCohortId;
+            model.Legend = GridTableHelper.GetSTAARTAKSLegend();
+
+            previousNextSessionProvider.RemovePreviousNextDataModel();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Get(GeneralOverviewRequest request)
+        {
+            var previousNextModel = previousNextSessionProvider.GetPreviousNextModel(Request.UrlReferrer, "GeneralOverview");
+
+            // If the StudentListType is None then the list type will not be known until after the service call provides the default
+            if (request.StudentListType == StudentListType.None.ToString())
+            {
+                previousNextModel.EntityIdArray = null;
+                previousNextModel.ListPersistenceUniqueId = null;
+                previousNextModel.ListUrl = Request.UrlReferrer != null ? Request.UrlReferrer.OriginalString : null;
+            } 
+            else
+            {
+                request.UniqueListId = previousNextModel.ListPersistenceUniqueId;
+            }
+
+            // TODO: GKM removed, pending Redis performance evaluation
+            //var previousNextModelHasRows = previousNextModel.EntityIdArray != null && previousNextModel.EntityIdArray.Any();
+
+            //if (previousNextModelHasRows)
+            //    request.StudentIdList =  previousNextSessionProvider.GetStudentIdList(previousNextModel, request.PageNumber, request.PageSize, request.SortColumn, request.SortDirection);
+            //else
+                //request.StudentIdList = new List<int>();
+            // TODO: GKM - Do this check (and subsequent joins) inside the service.  Request is untrusted input, 
+            // and adding this to an untrusted element only causes maintenance issues.
+            // TODO: GKM - Also, why is this method called Identity claim?  ViewAllStudents is not an identity claim.
+            // XML docs and method name don't jive.  Should look into this and clean it up.  Furthermore, there is no
+            // check here related to the ed org.  Get the user Id in the service and check the claims at the point
+            // where we need to incorporate the joins.  Don't grab it at a higher level and pass it through as user input.
+            //if (!UserInformation.Current.HasIdentityClaim(EdFiClaimTypes.ViewAllStudents))
+            //    request.UserStaffUSI = UserInformation.Current.StaffUSI;
+
+            var resourceModel = service.Get(request);
+
+            // If ListPersistenceUniqueId is Null then the Id should have been set in the service based on list id if determined
+            // TODO: But setting the list context really isn't the service's responsibility... that logic should reside exclusively out here,
+            // including the appending of the listContext to the model (via the interceptor)?
+            if (previousNextModel.ListPersistenceUniqueId == null)
+                previousNextModel.ListPersistenceUniqueId = resourceModel.UniqueListId;
+
+            var rows = resourceModel.ListMetadata.GenerateRows(resourceModel.Students.ToList<StudentWithMetrics>(), previousNextModel.ListPersistenceUniqueId);
+            var model = new GridTable
+            {
+                Rows = rows,
+                TotalRows = resourceModel.EntityIds.Count,
+                //TotalRows = resourceModel.EntityIds.Any() ? resourceModel.EntityIds.Count : previousNextModelHasRows
+            };
+
+            // Store previous/next only if the Id could be determined
+            if (previousNextModel.ListPersistenceUniqueId != null)
+                previousNextSessionProvider.SetPreviousNextDataModel(previousNextModel, request.SortColumn, request.SortDirection, resourceModel.EntityIds);
+
+            // TODO: GKM - This should return a ViewResult, to allow for proper content negotiation to occur in ConnegActionInvoker
+            return Json(model);
+        }
+    }
+}
