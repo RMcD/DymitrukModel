@@ -8,8 +8,8 @@
     <ProjectGuid>{6EA4750A-8C3C-4111-B9A4-F35F5EF436ED}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EdFi.Dashboards.Resources</RootNamespace>
-    <AssemblyName>EdFi.Dashboards.Resources</AssemblyName>
+    <RootNamespace>EdFi.Hungry.Resources</RootNamespace>
+    <AssemblyName>EdFi.Hungry.Resources</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
@@ -170,7 +170,7 @@
     <Compile Include="LocalEducationAgency\OverviewService.cs" />
     <Compile Include="LocalEducationAgency\StudentDemographicListService.cs" />
     <Compile Include="LocalEducationAgency\StudentDemographicMenuService.cs" />
-    <Compile Include="Marker_EdFi_Dashboards_Resources.cs" />
+    <Compile Include="Marker_EdFi_Hungry_Resources.cs" />
     <Compile Include="Metric\DomainMetricService.cs" />
     <Compile Include="Metric\IDomainSpecificMetricNodeResolver.cs" />
     <Compile Include="Metric\MetricBaseUserContextApplicator.cs" />
@@ -202,7 +202,7 @@
     <Compile Include="Navigation\MetricRouteProviders\MetricActionRouteProviders\StudentSchoolMetricActionRouteProvider.cs" />
     <Compile Include="Navigation\Mvc\Areas\Application.cs" />
     <Compile Include="Navigation\Mvc\Areas\Error.cs" />
-    <Compile Include="Navigation\Mvc\EdFiDashboards.cs">
+    <Compile Include="Navigation\Mvc\EdFiHungry.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Navigation\RouteValueProviders\StaffLocalEducationAgencyRouteValueProvider.cs" />
@@ -240,7 +240,7 @@
     <Compile Include="Navigation\Mvc\Areas\StudentSchool.cs" />
     <Compile Include="Navigation\Mvc\EdFiSiteAreasBase.cs" />
     <Compile Include="Navigation\WebForms\Areas\Error.cs" />
-    <Compile Include="Navigation\WebForms\EdFiWebFormsDashboards.cs" />
+    <Compile Include="Navigation\WebForms\EdFiWebFormsHungry.cs" />
     <Compile Include="Navigation\WebForms\EdFiWebFormsSiteAreas.cs" />
     <Compile Include="Navigation\WebForms\SiteAreasBase.cs" />
     <Compile Include="Navigation\WebsiteNavigationBase.cs" />
@@ -337,7 +337,7 @@
     <Compile Include="StudentSchool\ImageService.cs" />
     <Compile Include="StudentSchool\InformationService.cs" />
     <Compile Include="Navigation\NavigationExtensions.cs" />
-    <Compile Include="Navigation\EdFiDashboardsSite.cs" />
+    <Compile Include="Navigation\EdFiHungrySite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StudentSchool\AccommodationProvider.cs" />
     <Compile Include="StudentSchool\Detail\AssessmentHistoryService.cs" />
@@ -352,53 +352,53 @@
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EdFi.Dashboards.Application.Data\EdFi.Dashboards.Application.Data.csproj">
+    <ProjectReference Include="..\EdFi.Hungry.Application.Data\EdFi.Hungry.Application.Data.csproj">
       <Project>{D930AEAF-1B9B-446E-847F-EC19E34027F3}</Project>
-      <Name>EdFi.Dashboards.Application.Data</Name>
+      <Name>EdFi.Hungry.Application.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EdFi.Dashboards.Metric.Data.Entities\EdFi.Dashboards.Metric.Data.Entities.csproj">
+    <ProjectReference Include="..\EdFi.Hungry.Metric.Data.Entities\EdFi.Hungry.Metric.Data.Entities.csproj">
       <Project>{A04D62AF-F76D-4C15-AEAB-DF022BEEB1A8}</Project>
-      <Name>EdFi.Dashboards.Metric.Data.Entities</Name>
+      <Name>EdFi.Hungry.Metric.Data.Entities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EdFi.Dashboards.Metric.Resources.Models\EdFi.Dashboards.Metric.Resources.Models.csproj">
+    <ProjectReference Include="..\EdFi.Hungry.Metric.Resources.Models\EdFi.Hungry.Metric.Resources.Models.csproj">
       <Project>{D6E84CA6-8494-4F3C-90B5-2B868DDE7A6C}</Project>
-      <Name>EdFi.Dashboards.Metric.Resources.Models</Name>
+      <Name>EdFi.Hungry.Metric.Resources.Models</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EdFi.Dashboards.Metric.Resources\EdFi.Dashboards.Metric.Resources.csproj">
+    <ProjectReference Include="..\EdFi.Hungry.Metric.Resources\EdFi.Hungry.Metric.Resources.csproj">
       <Project>{83928965-AF03-4518-9940-12BEF4BC079D}</Project>
-      <Name>EdFi.Dashboards.Metric.Resources</Name>
+      <Name>EdFi.Hungry.Metric.Resources</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EdFi.Dashboards.Common\EdFi.Dashboards.Common.csproj">
+    <ProjectReference Include="..\EdFi.Hungry.Common\EdFi.Hungry.Common.csproj">
       <Project>{5138F45D-EB07-4733-97E7-C761832BDC07}</Project>
-      <Name>EdFi.Dashboards.Common</Name>
+      <Name>EdFi.Hungry.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EdFi.Dashboards.Core\EdFi.Dashboards.Core.csproj">
+    <ProjectReference Include="..\EdFi.Hungry.Core\EdFi.Hungry.Core.csproj">
       <Project>{6492B293-E115-4E1D-9B08-D7C798673F40}</Project>
-      <Name>EdFi.Dashboards.Core</Name>
+      <Name>EdFi.Hungry.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EdFi.Dashboards.Data\EdFi.Dashboards.Data.csproj">
+    <ProjectReference Include="..\EdFi.Hungry.Data\EdFi.Hungry.Data.csproj">
       <Project>{2D634E95-52F6-404D-89AF-CA13C7C995D1}</Project>
-      <Name>EdFi.Dashboards.Data</Name>
+      <Name>EdFi.Hungry.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EdFi.Dashboards.Infrastructure\EdFi.Dashboards.Infrastructure.csproj">
+    <ProjectReference Include="..\EdFi.Hungry.Infrastructure\EdFi.Hungry.Infrastructure.csproj">
       <Project>{0C2CFA02-99C5-4BC1-8EBF-AA9EB75EEB3A}</Project>
-      <Name>EdFi.Dashboards.Infrastructure</Name>
+      <Name>EdFi.Hungry.Infrastructure</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EdFi.Dashboards.Resource.Models.Common\EdFi.Dashboards.Resource.Models.Common.csproj">
+    <ProjectReference Include="..\EdFi.Hungry.Resource.Models.Common\EdFi.Hungry.Resource.Models.Common.csproj">
       <Project>{B9977F25-9C76-4585-B52B-0826255F3318}</Project>
-      <Name>EdFi.Dashboards.Resource.Models.Common</Name>
+      <Name>EdFi.Hungry.Resource.Models.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EdFi.Dashboards.Resources.Models\EdFi.Dashboards.Resources.Models.csproj">
+    <ProjectReference Include="..\EdFi.Hungry.Resources.Models\EdFi.Hungry.Resources.Models.csproj">
       <Project>{3C848D33-B28B-4690-BE41-84EDDF1BBB23}</Project>
-      <Name>EdFi.Dashboards.Resources.Models</Name>
+      <Name>EdFi.Hungry.Resources.Models</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EdFi.Dashboards.Resources.Security.Common\EdFi.Dashboards.Resources.Security.Common.csproj">
+    <ProjectReference Include="..\EdFi.Hungry.Resources.Security.Common\EdFi.Hungry.Resources.Security.Common.csproj">
       <Project>{A8AF4718-41C9-4307-97B5-33F63111C76B}</Project>
-      <Name>EdFi.Dashboards.Resources.Security.Common</Name>
+      <Name>EdFi.Hungry.Resources.Security.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EdFi.Dashboards.SecurityTokenService.Authentication\EdFi.Dashboards.SecurityTokenService.Authentication.csproj">
+    <ProjectReference Include="..\EdFi.Hungry.SecurityTokenService.Authentication\EdFi.Hungry.SecurityTokenService.Authentication.csproj">
       <Project>{DBA5BFC2-B479-418E-84E9-44D39E1651D9}</Project>
-      <Name>EdFi.Dashboards.SecurityTokenService.Authentication</Name>
+      <Name>EdFi.Hungry.SecurityTokenService.Authentication</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
